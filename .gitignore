@@ -6,3 +6,5 @@ nb-configuration.xml
 .project
 .classpath
 .settings
+results/
+src/main/resources/db.properties
