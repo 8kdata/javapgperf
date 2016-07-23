@@ -42,3 +42,21 @@ You may also use a Java sampling profiler to perform both normal and profile run
     PROFILE_AGENT_PATH=/path/to/liblagent.so PROFILE_OUTPUT_FILE=traces.txt ./run_benchmark.sh -profile
 
 where the above command will be the required command to run the benchmarks while profiling with [lightweight-java-profiler](https://github.com/dcapwell/lightweight-java-profiler). All the output will be found in the `results/` folder.
+
+
+## Results
+
+It follows the results obtained on one benchmark. The benchmark was run on a dedicated m3.large instance on AWS (with no other VMs on the same physical host), without profiling enabled:
+
+Test | Postgres (ms) | Java (ms) | Overhead (%)
+---- | -------------:| ---------:| -----------:
+[_1_Int](src/main/java/com/eightkdata/research/javapgperf/benchs/_1_Int.java) | 3716.57 | 4032.06 | 8.49%
+[_2_String](src/main/java/com/eightkdata/research/javapgperf/benchs/_2_String.java) | 3691.12 | 6698.53 | 81.48%
+[_3_IntString](src/main/java/com/eightkdata/research/javapgperf/benchs/_3_IntString.java) | 5468.97 | 8842.70 | 61.69%
+[_4_IntStringJson](src/main/java/com/eightkdata/research/javapgperf/benchs/_4_IntStringJson.java) | 8935.48 | 19751.98 | 121.05%
+[_5_IntStringColumnNumber](src/main/java/com/eightkdata/research/javapgperf/benchs/_5_IntStringColumnNumber.java) | 6018.63 | 9143.73 | 51.92%
+[_6_String_NoAutocommit](src/main/java/com/eightkdata/research/javapgperf/benchs/_6_String_NoAutocommit.java) | 3076.55 | 4293.38 | 39.55%
+
+Please note that test execution times vary significantly from run to run, and thus some results may look like inconsistent. But the main takeaway is that there is an overhead, and this overhead is consistently present.
+
+It is also important to note that by specifying an explicitd fetch size and setting noAutoCommit (see [test 6](src/main/java/com/eightkdata/research/javapgperf/benchs/_6_String_NoAutocommit.java)) the execution time improves significantly (and overhead is less) due to a much reduced GC.
